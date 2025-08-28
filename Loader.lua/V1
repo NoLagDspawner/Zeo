@@ -107,7 +107,7 @@ button.MouseButton1Click:Connect(function()
     gui:Destroy()
 
     -- Run Pet ESP script
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/NoLagDspawner/asda/refs/heads/main/asda"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/NoLagDspawner/asda/refs/heads/main/asdas"))()
         
 end)
 
