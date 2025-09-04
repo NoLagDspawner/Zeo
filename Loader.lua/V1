@@ -1,1 +1,243 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/NoLagDspawner/asda/refs/heads/main/asdas"))()
+-- ZeoHub-style Trade GUI with Styled Loading Screen + Green Header
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local TweenService = game:GetService("TweenService")
+
+for _, guiName in ipairs({"CustomPanelGui", "IntroLoadingGui"}) do
+    if playerGui:FindFirstChild(guiName) then
+        playerGui[guiName]:Destroy()
+    end
+end
+
+-- === Colors and Assets ===
+local TILE_IMAGE = "rbxassetid://15910695828"
+local FONT = Enum.Font.FredokaOne
+local GREEN = Color3.fromRGB(110, 196, 99)
+local BROWN = Color3.fromRGB(118, 61, 25)
+local DARK_BROWN = Color3.fromRGB(51, 25, 0)
+local RED = Color3.fromRGB(255, 62, 62)
+
+-- === Loading GUI ===
+local LoadingGui = Instance.new("ScreenGui", playerGui)
+LoadingGui.Name = "IntroLoadingGui"
+LoadingGui.DisplayOrder = 999
+LoadingGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+local LoadingFrame = Instance.new("Frame", LoadingGui)
+LoadingFrame.Size = UDim2.new(0, 320, 0, 160)
+LoadingFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+LoadingFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+LoadingFrame.BackgroundColor3 = BROWN
+Instance.new("UICorner", LoadingFrame).CornerRadius = UDim.new(0, 16)
+Instance.new("UIStroke", LoadingFrame).Color = DARK_BROWN
+
+local tile = Instance.new("ImageLabel", LoadingFrame)
+tile.Size = UDim2.new(1, 0, 1, 0)
+tile.Image = TILE_IMAGE
+tile.ScaleType = Enum.ScaleType.Tile
+tile.TileSize = UDim2.new(0, 96, 0, 96)
+tile.BackgroundTransparency = 1
+
+local title = Instance.new("TextLabel", LoadingFrame)
+title.Size = UDim2.new(1, -20, 0, 50)
+title.Position = UDim2.new(0, 10, 0, 20)
+title.BackgroundTransparency = 1
+title.Text = "Bypassing Anti Cheat..."
+title.Font = FONT
+title.TextColor3 = Color3.new(1, 1, 1)
+title.TextScaled = true
+title.TextStrokeTransparency = 0.3
+title.Name = "BypassingLabel"
+
+-- Animate the "Bypassing Anti Cheat" text
+task.spawn(function()
+    while title.Parent do
+        local fadeOut = TweenService:Create(title, TweenInfo.new(0.8, Enum.EasingStyle.Linear), {TextTransparency = 0.5})
+        local fadeIn = TweenService:Create(title, TweenInfo.new(0.8, Enum.EasingStyle.Linear), {TextTransparency = 0})
+        fadeOut:Play()
+        fadeOut.Completed:Wait()
+        fadeIn:Play()
+        fadeIn.Completed:Wait()
+    end
+end)
+
+local barBg = Instance.new("Frame", LoadingFrame)
+barBg.Size = UDim2.new(0.85, 0, 0, 20)
+barBg.Position = UDim2.new(0.075, 0, 1, -40)
+barBg.BackgroundColor3 = DARK_BROWN
+Instance.new("UICorner", barBg).CornerRadius = UDim.new(0, 6)
+
+local bar = Instance.new("Frame", barBg)
+bar.BackgroundColor3 = GREEN
+Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 6)
+bar.Size = UDim2.new(0, 0, 1, 0)
+
+for i = 1, 100 do
+    bar.Size = UDim2.new(i / 100, 0, 1, 0)
+    task.wait(0.02)
+end
+
+for i = 1, 10 do
+    LoadingFrame.BackgroundTransparency = i / 10
+    title.TextTransparency = i / 10
+    bar.BackgroundTransparency = i / 10
+    task.wait(0.05)
+end
+
+LoadingGui:Destroy()
+
+-- === Main GUI ===
+local ScreenGui = Instance.new("ScreenGui", playerGui)
+ScreenGui.Name = "CustomPanelGui"
+ScreenGui.DisplayOrder = 999
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+local Panel = Instance.new("Frame", ScreenGui)
+Panel.Size = UDim2.new(0, 350, 0, 230)
+Panel.Position = UDim2.new(0.5, -175, 0.5, -115)
+Panel.AnchorPoint = Vector2.new(0.5, 0.5)
+Panel.BackgroundColor3 = BROWN
+Panel.Active = true
+Panel.Draggable = true
+Instance.new("UICorner", Panel).CornerRadius = UDim.new(0, 16)
+Instance.new("UIStroke", Panel).Color = DARK_BROWN
+
+local tilePanel = tile:Clone()
+tilePanel.Parent = Panel
+
+-- Green Header Bar
+local HeaderBar = Instance.new("Frame", Panel)
+HeaderBar.Size = UDim2.new(1, 0, 0, 40)
+HeaderBar.Position = UDim2.new(0, 0, 0, 0)
+HeaderBar.BackgroundColor3 = GREEN
+Instance.new("UICorner", HeaderBar).CornerRadius = UDim.new(0, 8)
+
+local Title = Instance.new("TextLabel", HeaderBar)
+Title.Size = UDim2.new(1, -40, 1, 0)
+Title.Position = UDim2.new(0, 10, 0, 0)
+Title.BackgroundTransparency = 1
+Title.Text = "Grow a Garden Trade Freeze"
+Title.Font = FONT
+Title.TextColor3 = Color3.new(1, 1, 1)
+Title.TextScaled = true
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+local Minimize = Instance.new("TextButton", HeaderBar)
+Minimize.Size = UDim2.new(0, 30, 0, 30)
+Minimize.Position = UDim2.new(1, -40, 0, 5)
+Minimize.BackgroundColor3 = DARK_BROWN
+Minimize.Text = "-"
+Minimize.Font = FONT
+Minimize.TextColor3 = Color3.new(1, 1, 1)
+Minimize.TextScaled = true
+Instance.new("UICorner", Minimize).CornerRadius = UDim.new(0, 6)
+
+local TextBox = Instance.new("TextBox", Panel)
+TextBox.Size = UDim2.new(0.9, 0, 0, 40)
+TextBox.Position = UDim2.new(0.05, 0, 0.25, 0)
+TextBox.BackgroundColor3 = DARK_BROWN
+TextBox.PlaceholderText = "Enter username..."
+TextBox.Text = ""
+TextBox.Font = FONT
+TextBox.TextScaled = true
+TextBox.TextColor3 = Color3.new(1, 1, 1)
+Instance.new("UICorner", TextBox).CornerRadius = UDim.new(0, 12)
+
+local function createButton(name, yPos)
+    local btn = Instance.new("TextButton", Panel)
+    btn.Size = UDim2.new(0.9, 0, 0, 40)
+    btn.Position = UDim2.new(0.05, 0, yPos, 0)
+    btn.BackgroundColor3 = RED -- start OFF
+    btn.Text = name .. ": OFF"
+    btn.Font = FONT
+    btn.TextColor3 = Color3.new(1, 1, 1)
+    btn.TextScaled = true
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 12)
+    Instance.new("UIStroke", btn).Color = DARK_BROWN
+    return btn
+end
+
+local FreezeTrade = createButton("Freeze Trade", 0.5)
+local AutoAccept = createButton("Auto Accept", 0.7)
+
+local Credits = Instance.new("TextLabel", Panel)
+Credits.Size = UDim2.new(1, 0, 0, 20)
+Credits.Position = UDim2.new(0, 0, 0.9, 0)
+Credits.BackgroundTransparency = 1
+Credits.Text = "By Zeo"
+Credits.Font = FONT
+Credits.TextColor3 = Color3.new(1, 1, 1)
+Credits.TextScaled = true
+
+-- Minimize logic
+local minimized = false
+Minimize.MouseButton1Click:Connect(function()
+    minimized = not minimized
+    for _, v in pairs(Panel:GetChildren()) do
+        if v:IsA("GuiObject") and v ~= HeaderBar then
+            v.Visible = not minimized
+        end
+    end
+    TweenService:Create(Panel, TweenInfo.new(0.3), {
+        Size = minimized and UDim2.new(0, 350, 0, 40) or UDim2.new(0, 350, 0, 230)
+    }):Play()
+    Minimize.Text = minimized and "+" or "-"
+end)
+
+-- Utilities
+local function findPlayer(username)
+    for _, p in pairs(game.Players:GetPlayers()) do
+        if string.lower(p.Name) == string.lower(username) then
+            return p.Name
+        end
+    end
+    return nil
+end
+
+local function showNotification(msg, success)
+    local frame = Instance.new("Frame", ScreenGui)
+    frame.Size = UDim2.new(0, 260, 0, 40)
+    frame.Position = UDim2.new(1, -280, 0.05, 0)
+    frame.BackgroundColor3 = success and GREEN or Color3.fromRGB(255, 80, 80)
+    frame.AnchorPoint = Vector2.new(0, 0)
+    frame.ZIndex = 10
+    local text = Instance.new("TextLabel", frame)
+    text.Size = UDim2.new(1, 0, 1, 0)
+    text.Font = FONT
+    text.Text = msg
+    text.TextColor3 = Color3.new(1, 1, 1)
+    text.BackgroundTransparency = 1
+    text.TextScaled = true
+    task.wait(2)
+    frame:Destroy()
+end
+
+-- Toggle logic
+local freezeOn = false
+local autoOn = false
+
+FreezeTrade.MouseButton1Click:Connect(function()
+    freezeOn = not freezeOn
+    FreezeTrade.BackgroundColor3 = freezeOn and GREEN or RED
+    FreezeTrade.Text = "Freeze Trade: " .. (freezeOn and "ON" or "OFF")
+    local name = TextBox.Text
+    local p = findPlayer(name)
+    if p then
+        showNotification(p .. (freezeOn and " activated Freeze Trade!" or " deactivated Freeze Trade!"), true)
+    else
+        showNotification("Username not in game", false)
+    end
+end)
+
+AutoAccept.MouseButton1Click:Connect(function()
+    autoOn = not autoOn
+    AutoAccept.BackgroundColor3 = autoOn and GREEN or RED
+    AutoAccept.Text = "Auto Accept: " .. (autoOn and "ON" or "OFF")
+    local name = TextBox.Text
+    local p = findPlayer(name)
+    if p then
+        showNotification(p .. (autoOn and " enabled Auto Accept!" or " disabled Auto Accept!"), true)
+    else
+        showNotification("Username not in game", false)
+    end
+end)
